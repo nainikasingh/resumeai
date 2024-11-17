@@ -3,17 +3,17 @@ FROM python:3.9-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the contents of the app directory into the container
-COPY ./app /app
+# Copy the entire app directory into the container
+COPY . /app
 
-# Install dependencies
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set Python path to recognize `app` as a module
-ENV PYTHONPATH=/app
-
-# Expose the application port
+# Expose the container port
 EXPOSE 80
+
+# Set the Python path to ensure `app` is treated as a module
+ENV PYTHONPATH=/app
 
 # Run the application
 CMD ["python", "-m", "app.main"]
