@@ -1,17 +1,19 @@
-# Use a slim version of Python 3.9
 FROM python:3.9-slim
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy project files into the container
+# Copy the contents of the app directory into the container
 COPY . /app
 
-# Install project dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 80
+# Set Python path to recognize `app` as a module
+ENV PYTHONPATH=/app
+
+# Expose the application port
 EXPOSE 80
 
-# Run the FastAPI application with Uvicorn 
+# Run the application
 CMD ["python", "main.py"]
