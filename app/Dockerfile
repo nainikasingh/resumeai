@@ -1,19 +1,19 @@
 FROM python:3.9-slim
 
-# Set the working directory
-WORKDIR /app
+# Set the working directory to the root of the container
+WORKDIR /
 
-# Copy all contents of the app directory to /app inside the container
-COPY . /app
+# Copy the entire app directory into /app
+COPY ./app /app
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Set PYTHONPATH to include /app
+# Add /app to PYTHONPATH
 ENV PYTHONPATH=/app
 
 # Expose the application port
 EXPOSE 80
 
-# Start the FastAPI app
-CMD ["python", "-m", "main"]
+# Run the FastAPI app
+CMD ["python", "-m", "app.main"]
