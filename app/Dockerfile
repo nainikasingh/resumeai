@@ -16,4 +16,4 @@ ENV PYTHONPATH=/app
 EXPOSE 80
 
 # Run the application
-CMD ["python", "main.py"]
+CMD ["python", "-m", "app.main"]
