@@ -13,5 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose port 80
 EXPOSE 80
 
-# Run the FastAPI application with Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+# Run the FastAPI application with Uvicorn 
+CMD ["python", "main.py"]
