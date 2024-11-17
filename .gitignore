@@ -6,3 +6,5 @@ venv/
 *.pyo
 *.pyd
 .env
+ec2-keypair.pem
+ec2-keypair.pem:Zone.Identifier
