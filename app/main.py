@@ -40,8 +40,11 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
     Endpoint to upload a resume file for analysis.
     """
     try:
-        file_path = f"temp/{file.filename}"
-        os.makedirs("temp", exist_ok=True)
+        upload_dir = "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Save the file to the new directory
+        file_path = os.path.join(upload_dir, file.filename)
         with open(file_path, "wb") as buffer:
             buffer.write(await file.read())
 
