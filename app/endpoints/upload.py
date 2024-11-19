@@ -24,9 +24,11 @@ async def upload_file(file: UploadFile = File(...)):
     """
     print("API /upload-file endpoint called with file:", file.filename)
     try:
-        # Save the uploaded file locally
-        file_location = f"temp/{file.filename}"
-        os.makedirs("temp", exist_ok=True)
+        # Save the uploaded file to the hosting platform's directory
+        upload_dir = "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload"
+        os.makedirs(upload_dir, exist_ok=True)
+        file_location = os.path.join(upload_dir, file.filename)
+        
         with open(file_location, "wb") as f:
             f.write(await file.read())
         
@@ -83,8 +85,8 @@ async def upload_file(file: UploadFile = File(...)):
             "experience_years": experience_years,
         }
 
-        # Clean up the uploaded file
-        os.remove(file_location)
+        # Clean up the uploaded file if necessary
+        # os.remove(file_location)  # Comment this out if you want to retain the uploaded file
         return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

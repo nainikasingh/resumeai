@@ -20,7 +20,7 @@ app = FastAPI()
 # Allow your WordPress site to access FastAPI
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://nishantz2.sg-host.com"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
