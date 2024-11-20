@@ -69,8 +69,16 @@ async def upload_file(file: UploadFile = File(...)):
         # Perform layout analysis
         layout_score = layout_analysis_with_opencv(file_location)
 
-        # Calculate the total score based on the resume content
-        total_score = rate_resume(text, job_profile, experience_years)
+
+        # Calculate the resume score
+        get_score = rate_resume(text, detected_profile, experience_years)
+
+        total_final_score = get_score[0]
+        grammar_final_score = get_score[1]
+        action_final_score = get_score[2]
+        ats_final_score = get_score[3]
+        keywords_final_score = get_score[4]
+        page_length_final_score = get_score[5]
 
         # Prepare the response
         result = {
