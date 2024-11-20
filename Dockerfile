@@ -1,26 +1,25 @@
+# Use a lightweight Python image
 FROM python:3.9-slim
 
-# Set the working directory
-WORKDIR /
+# Set a specific working directory
+WORKDIR /app
 
-# Install Java (OpenJDK 17) and other system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies (only if needed)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     openjdk-17-jre-headless \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy the entire app directory into /app
+# Copy the app directory into the container
 COPY ./app /app
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Install Python dependencies from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Add /app to PYTHONPATH
-ENV PYTHONPATH=/app
+# Set environment variables
+ENV PYTHONPATH=/app \
+    JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-# Set Java's home directory (optional, depending on your application)
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-
-# Expose the application port
+# Expose the application port (FastAPI default is 80)
 EXPOSE 80
 
 # Run the FastAPI app
