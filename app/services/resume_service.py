@@ -216,10 +216,14 @@ def rate_resume(resume_text, job_profile, experience_years):
     ats_score = ats_friendly_check(resume_text)
 
     # Total score calculation
-    total_score = grammar_score + action_verbs_score + keywords_score + \
+    total_score_number = grammar_score + action_verbs_score + keywords_score + \
                   page_length_score + ats_score
+        
+    total_score = (total_score_number / 50) * 100
 
-    return (total_score / 50) * 100
+    list_output = [total_score, grammar_score, action_verbs_score, ats_score, keywords_score, page_length_score]
+
+    return list_output
 
 def analyze_resume(file_path):
     """
@@ -263,7 +267,14 @@ def analyze_resume(file_path):
     layout_score = layout_analysis_with_pillow(file_path)
 
     # Calculate the resume score
-    total_score = rate_resume(text, detected_profile, experience_years)
+    get_score = rate_resume(text, detected_profile, experience_years)
+
+    total_final_score = get_score[0]
+    grammar_final_score = get_score[1]
+    action_final_score = get_score[2]
+    ats_final_score = get_score[3]
+    keywords_final_score = get_score[4]
+    page_length_final_score = get_score[5]
 
     # Return detailed results
     return {
@@ -273,5 +284,11 @@ def analyze_resume(file_path):
         "action_verb_suggestions": action_verb_suggestions,
         "keyword_suggestions": keyword_suggestions,
         "missing_sections": missing_sections,
-        "layout_score": layout_score
+        "layout_score": layout_score,
+        "total_final_score": total_final_score,
+        "grammar_final_score": grammar_final_score,
+        "action_final_score": action_final_score,
+        "ats_final_score": ats_final_score,
+        "keywords_final_score": keywords_final_score,
+        "page_length_final_score": page_length_final_score
     }

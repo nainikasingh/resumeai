@@ -83,6 +83,12 @@ async def upload_file(file: UploadFile = File(...)):
             "layout_score": layout_score,
             "job_profile": job_profile,
             "experience_years": experience_years,
+            "total_final_score": total_final_score,
+            "grammar_final_score": grammar_final_score,
+            "action_final_score": action_final_score,
+            "ats_final_score": ats_final_score,
+            "keywords_final_score": keywords_final_score,
+            "page_length_final_score": page_length_final_score
         }
 
         # Clean up the uploaded file if necessary

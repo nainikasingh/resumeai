@@ -39,14 +39,27 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
     """
     Endpoint to upload a resume file for analysis.
     """
-    try:
-        upload_dir = "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload"
-        os.makedirs(upload_dir, exist_ok=True)
-        
-        # Save the file to the new directory
-        file_path = os.path.join(upload_dir, file.filename)
-        with open(file_path, "wb") as buffer:
-            buffer.write(await file.read())
+try:
+    # Directory setup
+    upload_dir = os.getenv("UPLOAD_DIR", "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload")
+
+    # Validate file type
+    ALLOWED_EXTENSIONS = {".pdf", ".docx"}
+    file_extension = os.path.splitext(file.filename)[1].lower()
+
+    if file_extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file type: {file_extension}. Allowed types are {ALLOWED_EXTENSIONS}",
+        )
+
+    # Ensure upload directory exists
+    os.makedirs(upload_dir, exist_ok=True)
+
+    # Save the file to the new directory
+    file_path = os.path.join(upload_dir, file.filename)
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
 
         # Extract text
         text = extract_text(file_path)
@@ -97,6 +110,12 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
             "layout_score": layout_score,
             "job_profile": job_profile,
             "experience_years": experience_years,
+            "total_final_score": total_final_score,
+            "grammar_final_score": grammar_final_score,
+            "action_final_score": action_final_score,
+            "ats_final_score": ats_final_score,
+            "keywords_final_score": keywords_final_score,
+            "page_length_final_score": page_length_final_score
         }
 
     except Exception as e:
