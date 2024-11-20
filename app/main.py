@@ -17,6 +17,12 @@ from app.services.resume_service import (
 
 app = FastAPI()
 
+# Allow cross-origin requests from the frontend's domain
+origins = [
+    "https://nishantz3.sg-host.com",  # your frontend's domain
+    "http://localhost",  # allow localhost for local development (if needed)
+]
+
 # Allow your WordPress site to access FastAPI
 app.add_middleware(
     CORSMiddleware,
