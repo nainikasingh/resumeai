@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.services.resume_service import (
     extract_text,
     split_into_sections,
-    extract_experience_from_dates,
+    extract_experience_from_dates,  # New method for experience calculation
     grammar_check,
     detect_job_profile,
     action_verbs_quality,
@@ -19,8 +19,8 @@ app = FastAPI()
 
 # Allow cross-origin requests from the frontend's domain
 origins = [
-    "https://nishantz3.sg-host.com",
-    "http://localhost",
+    "https://nishantz3.sg-host.com",  # your frontend's domain
+    "http://localhost",  # allow localhost for local development (if needed)
 ]
 
 # Allow your WordPress site to access FastAPI
@@ -34,15 +34,18 @@ app.add_middleware(
 
 print("FastAPI application is starting...")
 
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Resume Analyzer API"}
+
 
 @app.post("/analyze-resume/")
 async def analyze_resume_endpoint(file: UploadFile = File(...)):
     """
     Endpoint to upload a resume file for analysis.
     """
+    
     try:
         # Directory setup
         upload_dir = os.getenv("UPLOAD_DIR", "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload")
@@ -75,7 +78,7 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
         # Split text into sections
         sections = split_into_sections(text)
 
-        # Extract experience
+    # Extract experience
         experience_years = extract_experience_from_dates(text)
 
         # Grammar check
@@ -98,7 +101,6 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
         layout_score = layout_analysis_with_pillow(file_path)
 
         # Calculate the resume score
-        detected_profile = job_profile  # Use detected profile for scoring
         get_score = rate_resume(text, detected_profile, experience_years)
 
         total_final_score = get_score[0]
@@ -108,12 +110,13 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
         keywords_final_score = get_score[4]
         page_length_final_score = get_score[5]
 
+
         # Clean up
         os.remove(file_path)
 
         # Return response
         return {
-            "total_score": total_final_score,
+            "total_score": total_score,
             "grammar_errors": grammar_errors,
             "repeated_action_verbs": repeated_verbs,
             "action_verb_suggestions": action_verb_suggestions,
@@ -136,4 +139,4 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     port = int(os.getenv("APP_PORT", 80))
-    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=80, reload=True)
