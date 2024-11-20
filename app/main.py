@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.services.resume_service import (
     extract_text,
     split_into_sections,
-    extract_experience_from_dates,  # New method for experience calculation
+    extract_experience_from_dates,
     grammar_check,
     detect_job_profile,
     action_verbs_quality,
@@ -19,8 +19,8 @@ app = FastAPI()
 
 # Allow cross-origin requests from the frontend's domain
 origins = [
-    "https://nishantz3.sg-host.com",  # your frontend's domain
-    "http://localhost",  # allow localhost for local development (if needed)
+    "https://nishantz3.sg-host.com",
+    "http://localhost",
 ]
 
 # Allow your WordPress site to access FastAPI
@@ -34,38 +34,36 @@ app.add_middleware(
 
 print("FastAPI application is starting...")
 
-
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Resume Analyzer API"}
-
 
 @app.post("/analyze-resume/")
 async def analyze_resume_endpoint(file: UploadFile = File(...)):
     """
     Endpoint to upload a resume file for analysis.
     """
-try:
-    # Directory setup
-    upload_dir = os.getenv("UPLOAD_DIR", "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload")
+    try:
+        # Directory setup
+        upload_dir = os.getenv("UPLOAD_DIR", "nishantz2.sg-host.com/public_html/wp-content/uploads/advanced-cf7-upload")
 
-    # Validate file type
-    ALLOWED_EXTENSIONS = {".pdf", ".docx"}
-    file_extension = os.path.splitext(file.filename)[1].lower()
+        # Validate file type
+        ALLOWED_EXTENSIONS = {".pdf", ".docx"}
+        file_extension = os.path.splitext(file.filename)[1].lower()
 
-    if file_extension not in ALLOWED_EXTENSIONS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported file type: {file_extension}. Allowed types are {ALLOWED_EXTENSIONS}",
-        )
+        if file_extension not in ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file type: {file_extension}. Allowed types are {ALLOWED_EXTENSIONS}",
+            )
 
-    # Ensure upload directory exists
-    os.makedirs(upload_dir, exist_ok=True)
+        # Ensure upload directory exists
+        os.makedirs(upload_dir, exist_ok=True)
 
-    # Save the file to the new directory
-    file_path = os.path.join(upload_dir, file.filename)
-    with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
+        # Save the file to the new directory
+        file_path = os.path.join(upload_dir, file.filename)
+        with open(file_path, "wb") as buffer:
+            buffer.write(await file.read())
 
         # Extract text
         text = extract_text(file_path)
@@ -100,10 +98,7 @@ try:
         layout_score = layout_analysis_with_pillow(file_path)
 
         # Calculate the resume score
-        # Perform layout analysis
-        layout_score = layout_analysis_with_pillow(file_path)
-
-        # Calculate the resume score
+        detected_profile = job_profile  # Use detected profile for scoring
         get_score = rate_resume(text, detected_profile, experience_years)
 
         total_final_score = get_score[0]
@@ -113,13 +108,12 @@ try:
         keywords_final_score = get_score[4]
         page_length_final_score = get_score[5]
 
-
         # Clean up
         os.remove(file_path)
 
         # Return response
         return {
-            "total_score": total_score,
+            "total_score": total_final_score,
             "grammar_errors": grammar_errors,
             "repeated_action_verbs": repeated_verbs,
             "action_verb_suggestions": action_verb_suggestions,
@@ -142,4 +136,4 @@ try:
 
 if __name__ == "__main__":
     port = int(os.getenv("APP_PORT", 80))
-    uvicorn.run("app.main:app", host="0.0.0.0", port=80, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
