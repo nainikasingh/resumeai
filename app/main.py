@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 import uvicorn
 import os
+from exceptions import SomeClass
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.resume_service import (
     extract_text,
@@ -78,7 +79,7 @@ async def analyze_resume_endpoint(file: UploadFile = File(...)):
         # Split text into sections
         sections = split_into_sections(text)
 
-    # Extract experience
+        # Extract experience
         experience_years = extract_experience_from_dates(text)
 
         # Grammar check
