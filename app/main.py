@@ -1,7 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 import uvicorn
 import os
-from exceptions import SomeClass
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.resume_service import (
     extract_text,

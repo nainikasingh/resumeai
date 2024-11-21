@@ -1,4 +1,3 @@
-from docx import Document
 import pdfplumber
 import re
 from datetime import datetime
